@@ -1,0 +1,8 @@
+# JANGAN PERNAH commit file-file ini ke GitHub.
+# .env berisi token bot asli. Kalau token pernah ter-commit,
+# cabut lewat @BotFather (/revoke) dan buat token baru,
+# karena menghapus file saja tidak menghapus riwayat Git.
+.env
+*.log
+__pycache__/
+*.pyc

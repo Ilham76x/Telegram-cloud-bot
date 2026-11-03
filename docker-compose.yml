@@ -1,0 +1,6 @@
+services:
+  bot-cloud-drive:
+    build: .
+    restart: always
+    env_file:
+      - .env

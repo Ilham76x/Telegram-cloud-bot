@@ -1,0 +1,69 @@
+PETUNJUK - TELEGRAM AUTO TOPIC SORTER V2
+Perbaikan: file pindah dalam hitungan detik (webhook), bukan menit (polling)
+
+KENAPA VERSI LAMA LAMBAT
+- Versi lama polling tiap 1 menit. File baru diproses saat trigger
+  berikutnya jalan, ditambah jeda penjadwalan Google, jadi terasa
+  1-5 menit sebelum asli dihapus dari General.
+- V2 pakai webhook: Telegram langsung kirim update ke script begitu
+  file di-upload, jadi salin + hapus jalan dalam hitungan detik.
+- Polling tetap ada sebagai cadangan, tapi JANGAN jalan bersamaan
+  dengan webhook untuk token yang sama.
+
+LANGKAH 1 - BOT BARU (WAJIB, JANGAN PAKAI TOKEN LAMA)
+1. Buka @BotFather di Telegram, /newbot, beri nama dan username.
+2. Token bot baru itu SIMPAN SENDIRI. Jangan kirim di chat WhatsApp,
+   jangan kirim ke grup, jangan tempel di file yang dibagikan.
+3. Masukkan bot baru ke grup file-mu, jadikan admin (izin hapus
+   pesan dan kirim pesan di semua topik).
+
+LANGKAH 2 - ISI CONFIG DI APPS SCRIPT
+1. Buka script.google.com, buat project baru.
+2. Tempel isi SCRIPT_CLOUD_DRIVE_V2.txt ke Code.gs.
+3. Isi di CONFIG:
+   - BOT_TOKEN: token bot BARU dari langkah 1
+   - CHAT_ID: ID grup file-mu (bukan ID grup jualan)
+   - TOPICS: ID topik asli untuk IMAGE, VIDEO, AUDIO, DOCUMENT.
+     Angka 100/200/300/400 di file hanya contoh.
+     Cari ID asli dengan fungsi scanTelegramIds di script ini
+     (jalankan saat masih mode polling, sebelum webhook dipasang).
+   - DELETE_ORIGINAL: true = file dipindah (disalin ke topik, lalu
+     asli di General dihapus). Ubah ke false kalau asli mau tetap
+     ada di General.
+4. Simpan project.
+
+LANGKAH 3 - PASANG WEBHOOK (SEKALI SAJA)
+1. Deploy > New deployment > pilih Web app.
+2. Execute as: Me.
+3. Who has access: Anyone (wajib, supaya server Telegram bisa
+   memanggil URL ini tanpa login Google).
+4. Deploy, salin URL Web App-nya.
+5. Tempel URL itu ke CONFIG.WEBHOOK_URL, simpan.
+6. Jalankan fungsi switchToWebhook() satu kali.
+   Fungsi ini menghapus trigger polling dan memasang webhook.
+7. Jalankan cekStatusWebhook() untuk memastikan URL webhook
+   terpasang dan tidak ada antrean tertahan.
+
+LANGKAH 4 - UJI
+1. Upload 1 foto ke topik General di grup file.
+2. Dalam hitungan detik, foto harus muncul di topik Gambar dan
+   pesan asli di General hilang.
+3. Ulangi untuk video, audio, dan dokumen.
+
+KALAU TIDAK JALAN
+- Jalankan cekStatusWebhook(): pastikan URL webhook ada.
+- Pastikan bot baru sudah admin di grup.
+- Pastikan CHAT_ID dan ID topik benar, bukan angka contoh.
+- Pastikan tidak ada trigger pollTelegram yang masih aktif.
+- Log error ada di Apps Script > Executions.
+
+KEMBALI KE POLLING
+- Jalankan switchToPolling() satu kali. Ini menghapus webhook dan
+  membuat trigger 1 menit lagi. Ingat: polling memang lambat,
+  itu batasnya, bukan kerusakan script.
+
+CATATAN KEAMANAN
+- Versi script yang sudah diisi token JANGAN dibagikan ke siapa pun.
+  File v2 ini sengaja masih berisi placeholder, bukan token asli.
+- Satu token hanya untuk satu bot. Jangan pakai token Fr1day atau
+  token bot jualan di script ini, nanti kedua bot berebut update.
